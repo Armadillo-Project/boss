@@ -7,10 +7,11 @@ public class LaserRotation : MonoBehaviour
 
     float angle;
     float stopAngle;
+    bool check = true;
     Vector2 target, mouse;
-    public bool check = true;
-    float timer=0;
     Color color;
+
+    public float cool;
 
 
     private void Start()
@@ -27,36 +28,21 @@ public class LaserRotation : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0)&&check)
         {
+            //When mouse button clicked, the angle of laser is fixed.
             stopAngle = angle;
             this.transform.rotation = Quaternion.AngleAxis(stopAngle - 90, Vector3.forward);
             check = false;
-            timer = 5.0f;
-            StartCoroutine(WaitForIt());
-            timer = 0;
+
+            //During waitingTime, occur click delay and check the collision. 
+            //Not Yet Collision Code.
+            FixAngle();
+
+            
         }
 
 
     }
-    IEnumerator WaitForIt()
-    {
-        while(timer > 1.0f)
-        {
-            timer -= Time.deltaTime;
-            appear();
-            yield return new WaitForSeconds(0.02f);
-        }
-
-        check = true;
-    }
-
-    public void appear()
-    {
-        SpriteRenderer spr = GetComponent<SpriteRenderer>();
-        Color color = spr.color;
-        color.a = 1f;
-        spr.color = color;
-
-    }
+   
 
     public void disappear()
     {
@@ -64,6 +50,22 @@ public class LaserRotation : MonoBehaviour
         Color color = spr.color;
         color.a = 0f;
         spr.color = color;
+
+    }
+    public void FixAngle()
+    {
+        StartCoroutine(Cooltime(cool));
+    }
+
+    IEnumerator Cooltime(float cool)
+    {
+        check = false;
+        while (cool > 0.0f)
+        {
+            cool -= Time.deltaTime;
+            yield return null;
+        }
+        check = true;
 
     }
 }
